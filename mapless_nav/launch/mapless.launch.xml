@@ -64,8 +64,17 @@
   </node>
 
   <!-- Goal selection node (listens to RViz 2D Nav Goal) -->
-  <node pkg="mapless_nav" exec="get_goal_point" name="get_goal_point" output="screen">
+  <!-- <node pkg="mapless_nav" exec="get_goal_point" name="get_goal_point" output="screen">
     <param name="use_sim_time" value="$(var use_sim_time)"/>
-  </node>
+  </node> -->
 
+  <!-- TODO: Node to send nn_goal to navigate (mapless) -->
+  <node pkg="mapless_nav" exec="tf_goal_point" name="tf_goal_point" output="screen">
+    <param name="use_sim_time" value="$(var use_sim_time)"/>
+    <param name="robot_frame" value="base_link"/>
+    <param name="output_topic" value="/NN_goal"/>
+    <param name="goal_active_topic" value="/mapless_nav/goal_active"/>
+    <param name="service_name" value="/navigation/mapless_goto"/>
+    <param name="rate_hz" value="50.0"/>
+  </node>
 </launch>

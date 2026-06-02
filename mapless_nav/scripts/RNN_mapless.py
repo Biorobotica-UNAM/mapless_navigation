@@ -72,6 +72,7 @@ class RNNMapless(Node):
         self.occ_sub = self.create_subscription(OccupancyGrid, '/mapless/local_occ_grid', self.occ_callback, 10)
         self.cmd_pub = self.create_publisher(Twist, '/hardware/base/cmd_vel', 10)
         self.target_reached_pub = self.create_publisher(Bool, '/maples_nav/goal_reached', 10)
+        self.goal_active_sub = self.create_subscription(Bool, '/mapless_nav/goal_active', self.goal_active_callback, 10)
 
         # ---------- State variables (all Python floats) ----------
         self.last_goal = [0.0, 0.0]   # distance, theta
@@ -97,6 +98,19 @@ class RNNMapless(Node):
 
         self.timer = self.create_timer(0.2, self.control_loop)
         self.get_logger().info('RNN Controller ready')
+
+    def goal_active_callback(self, msg):
+        if msg.data:
+            self.target_reached = False
+            self.publish_target_reached(False)
+            self.get_logger().info("Mapless goal activated")
+        else:
+            self.target_reached = True
+            self.publish_target_reached(True)
+            self.linx = 0.0
+            self.liny = 0.0
+            self.angz = 0.0
+            self.get_logger().info("Mapless goal deactivated")
 
     def goal_callback(self, msg):
         if self.target_reached:

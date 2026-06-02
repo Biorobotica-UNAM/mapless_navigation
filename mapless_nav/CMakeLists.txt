@@ -18,6 +18,7 @@ find_package(tf2_ros REQUIRED)
 find_package(tf2_geometry_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(debugger REQUIRED) 
+find_package(known_locations_interfaces REQUIRED)
 
 # ===== Executable =====
 add_executable(local_occ_grid_node src/local_occ_grid_node.cpp)
@@ -42,12 +43,29 @@ ament_target_dependencies(get_goal_point
 )
 target_include_directories(get_goal_point PRIVATE ${debugger_INCLUDE_DIRS})
 
+add_executable(tf_goal_point src/tf_goal_point.cpp)
+
+ament_target_dependencies(tf_goal_point
+  rclcpp
+  std_msgs
+  tf2
+  tf2_ros
+  tf2_geometry_msgs
+  known_locations_interfaces
+)
+
+target_include_directories(tf_goal_point PRIVATE ${debugger_INCLUDE_DIRS})
+
 # ===== Install =====
 install(TARGETS local_occ_grid_node
   DESTINATION lib/${PROJECT_NAME}
 )
 
 install(TARGETS get_goal_point
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+install(TARGETS tf_goal_point
   DESTINATION lib/${PROJECT_NAME}
 )
 
